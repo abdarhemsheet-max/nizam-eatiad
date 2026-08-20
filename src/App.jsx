@@ -83,7 +83,7 @@ export default function App() {
       <button
         className="mobile-sidebar-toggle"
         onClick={() => setSidebarOpen((v) => !v)}
-        title={sidebarOpen ? 'إخفاء لوحة التحكم' : 'إظهار لوحة التحكم'}
+        title={sidebarOpen ? 'إخفاء لوحة التحكم' : 'إظهار لوحة التحكم'} aria-label={sidebarOpen ? 'إخفاء لوحة التحكم' : 'إظهار لوحة التحكم'}
       >
         <Icon name={sidebarOpen ? 'x' : 'settings'} size={20} />
       </button>

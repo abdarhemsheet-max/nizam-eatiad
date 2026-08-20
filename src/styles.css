@@ -14,7 +14,10 @@
     --text-heading: #f4f1ea;
     --text-body: #dfe3ea;
     --text-secondary: #9aa5b4;
-    --text-muted: #6c7889;
+    /* أخفت درجة في السلّم، ومع ذلك تبلغ 4.99:1 على اللوح — فوق حد WCAG AA
+       (4.5:1) للنص الصغير. كل استعمالاتها نصوص بحجم 0.7rem–0.83rem، فلا
+       ينطبق عليها استثناء "النص الكبير". */
+    --text-muted: #7c8798;
 
     --danger: #e05252;
     --danger-soft: rgba(224, 82, 82, 0.1);
@@ -32,6 +35,11 @@
 
     --border-input: 1px solid rgba(255, 255, 255, 0.16);
     --transition-base: 0.15s ease;
+
+    /* حلقة تركيز واحدة لكل عناصر التحكم. outline لا box-shadow: يتبع نصف
+       القطر تلقائياً، ويظهر فوق أي خلفية بلا حاجة لتثبيت لون الفجوة. */
+    --focus-ring: 2px solid var(--primary-color);
+    --focus-ring-offset: 2px;
 }
 
 * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
@@ -83,6 +91,12 @@ body {
     overflow-y: auto;
 }
 
+/* فايرفوكس لا يدعم ::-webkit-scrollbar، فكان يعرض شريطاً فاتحاً افتراضياً
+   يشقّ اللوح الداكن. الخاصيتان القياسيتان تغطيانه. */
+.sidebar, .workspace-scroll, .modal-errors {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(197, 160, 89, 0.5) transparent;
+}
 .sidebar::-webkit-scrollbar { width: 6px; }
 .sidebar::-webkit-scrollbar-thumb { background: rgba(197, 160, 89, 0.5); border-radius: var(--radius-pill); }
 
@@ -534,7 +548,9 @@ input:checked + .slider:before { transform: translateX(18px); background-color: 
 .zoom-btn:hover { background: var(--primary-color); color: #14171c; }
 #zoom-level-text { font-weight: bold; text-align: center; font-family: monospace; font-size: 0.75rem; color: var(--primary-color); }
 
-.placeholder-text { color: rgba(255,255,255,0.35); font-size: 1.05rem; text-align: center; padding: 0 20px; }
+/* كان rgba(255,255,255,.35) = 2.63:1، أي دون الحد المقروء بفارق كبير —
+   وهو النص الوحيد على الشاشة في الحالة الفارغة، فيجب أن يُقرأ. */
+.placeholder-text { color: var(--text-secondary); font-size: 1.05rem; text-align: center; padding: 0 20px; }
 
 /* -- شاشة الخطأ غير المتوقع -- */
 .crash-screen { margin: auto; max-width: 560px; padding: 40px; text-align: center; display: flex; flex-direction: column; gap: 16px; align-items: center; }
@@ -611,10 +627,32 @@ input:checked + .slider:before { transform: translateX(18px); background-color: 
     border-radius: var(--radius-md);
 }
 
-/* توهّج تركيز رفيع ودقيق — حلقة صغيرة لا انتشار ضبابي */
-input:focus-visible, textarea:focus-visible, select:focus-visible,
+/* توهّج تركيز رفيع ودقيق داخل الحقول — يظهر عند الكتابة بالفأرة أيضاً،
+   لأن معرفة الحقل النشط أثناء الإدخال مفيدة لكل مستخدم لا للوحة المفاتيح وحدها. */
 input:focus, textarea:focus, select:focus {
     box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.28);
+}
+
+/* حلقة تركيز لوحة المفاتيح على كل عنصر تفاعلي.
+   قبلها كانت الحقول وحدها تُظهر التركيز، فمن يتنقّل بـ Tab بين الأزرار —
+   التصدير، أدوات الطبقات، التكبير، بطاقات الشاشة الرئيسية — يفقد موضعه
+   على الشاشة تماماً. :focus-visible يقصر الحلقة على لوحة المفاتيح فلا
+   تظهر عند النقر بالفأرة. */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+
+/* المفتاح ومربع الاختيار: الحلقة تلتف حول العنصر المرئي لا حول الـ input
+   المخفي خلفه (عرضه صفر، فحلقته غير مرئية). */
+.switch input:focus-visible + .slider {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
 }
 
 /* =========================================================================
@@ -633,6 +671,13 @@ input:focus, textarea:focus, select:focus {
     .crop-thumb-remove { opacity: 1; width: 24px; height: 24px; }
     .mask-region-resize { width: 26px; height: 26px; bottom: -12px; left: -12px; }
     .mask-region-remove { width: 24px; height: 24px; top: -11px; right: -11px; }
+}
+
+/* أدوات التكبير تظهر بشفافية 0.35 وتتّضح عند تمرير الفأرة — وعلى الشاشات
+   اللمسية لا وجود لتمرير أصلاً، فكانت تبقى باهتة إلى الأبد. هنا تُعرض
+   كاملةً لأن لا شيء يكشفها. */
+@media (hover: none) {
+    .zoom-controls { opacity: 1; }
 }
 
 @media (max-width: 1180px) and (min-width: 901px) {
@@ -705,4 +750,32 @@ input:focus, textarea:focus, select:focus {
     .sidebar { max-width: 360px; }
     .sidebar-mobile-header { margin-bottom: 4px; }
     h3 { margin-bottom: 6px; padding-bottom: 6px; }
+}
+
+/* =========================================================================
+ *  تقليل الحركة: من فعّل الإعداد في نظامه غالباً يعاني من دوار الحركة، أو
+ *  يستعمل جهازاً ضعيفاً. نوقف الحركات الزخرفية ونُبقي المؤشرات الوظيفية
+ *  (دوران أيقونة الانتظار، شريط التقدّم المتحرك) عاملةً لكن أبطأ بكثير —
+ *  إيقافها تماماً يجعل التطبيق يبدو متجمّداً أثناء توليد 200 شهادة.
+ * ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .spin {
+        animation-duration: 1.6s !important;
+        animation-iteration-count: infinite !important;
+    }
+    .progress-fill.indeterminate {
+        animation-duration: 2.4s !important;
+        animation-iteration-count: infinite !important;
+    }
+    .progress-fill { transition-duration: 0.2s !important; }
+
+    /* الرفع عند التمرير زخرفي بحت — يُستبدل بتغيّر الحدّ وحده. */
+    .dashboard-card:hover, .dashboard-card:focus-visible { transform: none; }
 }

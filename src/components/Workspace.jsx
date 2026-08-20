@@ -453,7 +453,7 @@ function CropMaskRegion({ region, onCommit, onRemove }) {
         className="mask-region-remove"
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onRemove}
-        title="إزالة هذه المنطقة"
+        title="إزالة هذه المنطقة" aria-label="إزالة هذه المنطقة"
       >
         <Icon name="x" size={11} />
       </button>
@@ -656,7 +656,7 @@ export default function Workspace() {
           <button
             className="zoom-btn"
             onClick={() => addCropMaskRegion(currentPhoto.id, cropTemplate)}
-            title="إضافة منطقة تغبيش يدوياً (لوجه فاته الكشف التلقائي مثلاً)"
+            title="إضافة منطقة تغبيش يدوياً (لوجه فاته الكشف التلقائي مثلاً)" aria-label="إضافة منطقة تغبيش يدوياً (لوجه فاته الكشف التلقائي مثلاً)"
           >
             <Icon name="plus" size={14} />
           </button>
@@ -664,7 +664,7 @@ export default function Workspace() {
             <button
               className="zoom-btn"
               onClick={() => resetCropMaskRegions(currentPhoto.id)}
-              title="إعادة الكشف التلقائي لهذه الصورة (يتجاهل كل تعديل يدوي عليها)"
+              title="إعادة الكشف التلقائي لهذه الصورة (يتجاهل كل تعديل يدوي عليها)" aria-label="إعادة الكشف التلقائي لهذه الصورة (يتجاهل كل تعديل يدوي عليها)"
             >
               <Icon name="refresh" size={14} />
             </button>
@@ -677,7 +677,7 @@ export default function Workspace() {
           <button
             className="zoom-btn"
             onClick={() => setPreviewIndex((i) => (i - 1 + cropImages.length) % cropImages.length)}
-            title="الصورة السابقة"
+            title="الصورة السابقة" aria-label="الصورة السابقة"
           >
             <Icon name="chevronRight" size={16} />
           </button>
@@ -687,7 +687,7 @@ export default function Workspace() {
           <button
             className="zoom-btn"
             onClick={() => setPreviewIndex((i) => (i + 1) % cropImages.length)}
-            title="الصورة التالية"
+            title="الصورة التالية" aria-label="الصورة التالية"
           >
             <Icon name="chevronLeft" size={16} />
           </button>
@@ -696,14 +696,14 @@ export default function Workspace() {
 
       {effectiveTemplate && (
         <div className="zoom-controls">
-          <button className="zoom-btn" onClick={() => changeZoom(0.1)} title="تكبير">
+          <button className="zoom-btn" onClick={() => changeZoom(0.1)} title="تكبير" aria-label="تكبير">
             <Icon name="plus" size={15} />
           </button>
           <span id="zoom-level-text">{Math.round(zoom * 100)}%</span>
-          <button className="zoom-btn" onClick={() => changeZoom(-0.1)} title="تصغير">
+          <button className="zoom-btn" onClick={() => changeZoom(-0.1)} title="تصغير" aria-label="تصغير">
             <Icon name="minus" size={15} />
           </button>
-          <button className="zoom-btn" onClick={resetZoom} title="إعادة ضبط (100%)">
+          <button className="zoom-btn" onClick={resetZoom} title="إعادة ضبط (100%)" aria-label="إعادة ضبط (100%)">
             <Icon name="refresh" size={15} />
           </button>
         </div>

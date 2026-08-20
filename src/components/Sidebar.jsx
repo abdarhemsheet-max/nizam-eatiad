@@ -463,7 +463,7 @@ function LayerItem({ field, isTop, isBottom }) {
       <div className="layer-row" onClick={() => selectField(isSelected ? null : field.id)}>
         <button
           className="btn-icon"
-          title={field.visible ? 'إخفاء الطبقة' : 'إظهار الطبقة'}
+          title={field.visible ? 'إخفاء الطبقة' : 'إظهار الطبقة'} aria-label={field.visible ? 'إخفاء الطبقة' : 'إظهار الطبقة'}
           onClick={stop(() => toggleVisibility(field.id))}
         >
           <Icon name={field.visible ? 'eye' : 'eyeOff'} size={14} />
@@ -488,7 +488,7 @@ function LayerItem({ field, isTop, isBottom }) {
 
         <button
           className="btn-icon"
-          title="رفع الطبقة للأمام"
+          title="رفع الطبقة للأمام" aria-label="رفع الطبقة للأمام"
           disabled={isTop}
           onClick={stop(() => moveLayer(field.id, 1))}
         >
@@ -496,18 +496,18 @@ function LayerItem({ field, isTop, isBottom }) {
         </button>
         <button
           className="btn-icon"
-          title="إنزال الطبقة للخلف"
+          title="إنزال الطبقة للخلف" aria-label="إنزال الطبقة للخلف"
           disabled={isBottom}
           onClick={stop(() => moveLayer(field.id, -1))}
         >
           <Icon name="chevronDown" size={14} />
         </button>
-        <button className="btn-icon" title="تكرار الطبقة (Ctrl+D)" onClick={stop(() => duplicateField(field.id))}>
+        <button className="btn-icon" title="تكرار الطبقة (Ctrl+D)" aria-label="تكرار الطبقة (Ctrl+D)" onClick={stop(() => duplicateField(field.id))}>
           <Icon name="copy" size={13} />
         </button>
         <button
           className="btn-icon danger"
-          title="حذف الطبقة (Delete)"
+          title="حذف الطبقة (Delete)" aria-label="حذف الطبقة (Delete)"
           onClick={stop(() => removeField(field.id))}
         >
           <Icon name="trash" size={14} />
@@ -754,10 +754,10 @@ function ManualSection() {
         />
 
         <div className="layers-toolbar">
-          <button className="btn-icon" title="تراجع (Ctrl+Z)" disabled={!canUndo} onClick={undo}>
+          <button className="btn-icon" title="تراجع (Ctrl+Z)" aria-label="تراجع (Ctrl+Z)" disabled={!canUndo} onClick={undo}>
             <Icon name="undo" size={14} />
           </button>
-          <button className="btn-icon" title="إعادة (Ctrl+Y)" disabled={!canRedo} onClick={redo}>
+          <button className="btn-icon" title="إعادة (Ctrl+Y)" aria-label="إعادة (Ctrl+Y)" disabled={!canRedo} onClick={redo}>
             <Icon name="redo" size={14} />
           </button>
           <span className="layers-count">{fields.length} طبقة</span>
@@ -887,7 +887,7 @@ function CropSection() {
                   <img src={img.url} alt={img.name} />
                   <button
                     className="crop-thumb-remove"
-                    title="إزالة"
+                    title="إزالة" aria-label="إزالة"
                     onClick={() => removeCropImage(img.id)}
                   >
                     <Icon name="x" size={11} />
@@ -978,7 +978,7 @@ function PostsSection() {
                 onChange={(e) => setPostsApiKey(e.target.value)}
                 autoComplete="off"
               />
-              <button className="btn-icon" onClick={() => setShowKey((v) => !v)} title={showKey ? 'إخفاء' : 'إظهار'}>
+              <button className="btn-icon" onClick={() => setShowKey((v) => !v)} title={showKey ? 'إخفاء' : 'إظهار'} aria-label={showKey ? 'إخفاء' : 'إظهار'}>
                 <Icon name={showKey ? 'eyeOff' : 'eye'} size={14} />
               </button>
             </div>
@@ -1166,13 +1166,13 @@ export default function Sidebar({ isOpen, onClose }) {
           <span className="brand-mark" />
           نظام <span>اعتياد</span>
         </h2>
-        <button className="btn-icon sidebar-close" onClick={onClose} title="إغلاق">
+        <button className="btn-icon sidebar-close" onClick={onClose} title="إغلاق" aria-label="إغلاق">
           <Icon name="x" size={15} />
         </button>
       </div>
 
       <div className="workspace-nav">
-        <button className="btn-icon" onClick={goHome} title="العودة للشاشة الرئيسية">
+        <button className="btn-icon" onClick={goHome} title="العودة للشاشة الرئيسية" aria-label="العودة للشاشة الرئيسية">
           <Icon name="home" size={15} />
         </button>
         <div className="workspace-nav-current">
