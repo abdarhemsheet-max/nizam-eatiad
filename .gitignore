@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vite/
+*.local
+.env
+.env.local
+.DS_Store
+Thumbs.db
+
+# Supabase CLI — حالة محلية للربط، ليست جزءاً من المشروع
+supabase/.temp/
+supabase/.branches/
