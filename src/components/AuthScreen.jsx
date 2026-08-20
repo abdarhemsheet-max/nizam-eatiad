@@ -10,7 +10,7 @@ import { getSupabase } from '../core/supabase.js';
  *  حيث الدخول شرط لا مفرّ منه.
  * ========================================================================= */
 
-export default function AuthScreen({ headline, subline, onSkip }) {
+export default function AuthScreen({ headline, subline, onSkip, skipLabel, allowSignUp = true }) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -110,13 +110,17 @@ export default function AuthScreen({ headline, subline, onSkip }) {
           {loading ? '...' : isSignUp ? 'إنشاء الحساب' : 'دخول'}
         </button>
 
-        <button type="button" className="link-btn" onClick={() => setIsSignUp((v) => !v)}>
-          {isSignUp ? 'لديك حساب بالفعل؟ سجّل الدخول' : 'ليس لديك حساب؟ أنشئ حساباً جديداً'}
-        </button>
+        {/* التسجيل العام مغلق في هذا النظام: الحسابات تُنشأ من لوحة المدير
+            وحدها، فإظهار "أنشئ حساباً" يقود المستخدم إلى خطأ من الخادم. */}
+        {allowSignUp && (
+          <button type="button" className="link-btn" onClick={() => setIsSignUp((v) => !v)}>
+            {isSignUp ? 'لديك حساب بالفعل؟ سجّل الدخول' : 'ليس لديك حساب؟ أنشئ حساباً جديداً'}
+          </button>
+        )}
 
         {onSkip && (
           <button type="button" className="link-btn" onClick={onSkip}>
-            المتابعة بلا حساب — كل الأوضاع تعمل، بلا حفظ سحابي
+            {skipLabel ?? 'المتابعة بلا حساب — كل الأوضاع تعمل، بلا حفظ سحابي'}
           </button>
         )}
       </form>

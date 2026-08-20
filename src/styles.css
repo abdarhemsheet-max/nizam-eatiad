@@ -574,6 +574,30 @@ input:checked + .slider:before { transform: translateX(18px); background-color: 
     overflow-y: auto;
 }
 
+/* -- إدخال رمز الموظف: ثلاثة صناديق كبيرة، أرقام لاتينية دائماً حتى لا
+   يختلط 6 و 7 العربيان على من يقرأ الرمز من ورقة. */
+.code-inputs { display: flex; gap: 12px; justify-content: center; margin: 4px 0 2px; }
+.code-digit {
+    width: 62px; height: 72px; text-align: center;
+    font-family: monospace; font-size: 2rem; font-weight: 700;
+    color: var(--text-heading); background: var(--panel-bg-sunken);
+    border: 1px solid rgba(255, 255, 255, 0.16); border-radius: var(--radius-md);
+    outline: none; transition: border-color var(--transition-base);
+    -moz-appearance: textfield;
+}
+.code-digit:focus { border-color: var(--primary-color); }
+.code-digit:disabled { opacity: 0.5; }
+
+/* زر إغلاق شاشة الدخول — في زاوية الطبقة لا داخل البطاقة */
+.auth-close {
+    position: absolute; top: 18px; inset-inline-end: 18px; z-index: 10;
+    width: 34px; height: 34px;
+}
+
+@media (max-width: 380px) {
+    .code-digit { width: 52px; height: 62px; font-size: 1.6rem; }
+}
+
 .account-bar {
     position: absolute; top: 18px; inset-inline-start: 18px;
     display: flex; align-items: center; gap: 8px;

@@ -6,6 +6,7 @@ import Icon from '../components/Icon.jsx';
 import UsersPanel from './UsersPanel.jsx';
 import StatsPanel from './StatsPanel.jsx';
 import TemplatesPanel from './TemplatesPanel.jsx';
+import StaffPanel from './StaffPanel.jsx';
 
 /* =========================================================================
  *  لوحة المدير — صفحة مستقلة (admin.html) لا يصل إليها التطبيق العادي.
@@ -19,13 +20,14 @@ import TemplatesPanel from './TemplatesPanel.jsx';
 
 const TABS = [
   { id: 'stats', label: 'الإحصاءات', icon: 'zap' },
-  { id: 'users', label: 'المستخدمون', icon: 'table' },
+  { id: 'staff', label: 'الموظفون', icon: 'table' },
+  { id: 'users', label: 'كل الحسابات', icon: 'layers' },
   { id: 'templates', label: 'القوالب المشتركة', icon: 'image' },
 ];
 
 export default function AdminApp() {
   const { ready, user, profile } = useSession();
-  const [tab, setTab] = useState('stats');
+  const [tab, setTab] = useState('staff');
 
   if (!SUPABASE_READY) {
     return (
@@ -53,7 +55,17 @@ export default function AdminApp() {
     );
   }
 
-  if (!user) return <AuthScreen headline="لوحة المدير" subline="سجّل الدخول بحساب مدير للمتابعة" />;
+  // allowSignUp=false: التسجيل العام مغلق على مستوى المشروع، فزرّ
+  // "أنشئ حساباً" لن يقود إلا إلى رفض من الخادم.
+  if (!user) {
+    return (
+      <AuthScreen
+        headline="لوحة المدير"
+        subline="سجّل الدخول بحساب مدير للمتابعة"
+        allowSignUp={false}
+      />
+    );
+  }
 
   if (!isAdmin(profile)) {
     return (
@@ -98,6 +110,7 @@ export default function AdminApp() {
       }
     >
       {tab === 'stats' && <StatsPanel />}
+      {tab === 'staff' && <StaffPanel />}
       {tab === 'users' && <UsersPanel currentUserId={user.id} />}
       {tab === 'templates' && <TemplatesPanel />}
     </AdminShell>
