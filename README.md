@@ -98,14 +98,15 @@ npm run dev
 npm run build
 ```
 
-الناتج كله في مجلد `dist/` — ملفات HTML و JS و CSS ثابتة فقط. لا Backend، ولا قاعدة
-بيانات، ولا متغيرات بيئة، ولا أي إعداد على الخادم.
+الناتج كله في مجلد `dist/` — ملفات HTML و JS و CSS ثابتة فقط. لا Backend ولا أي إعداد
+على الخادم؛ المتغيّران الوحيدان (`VITE_SUPABASE_*`) يُقرآن وقت البناء لا وقت التشغيل،
+وقاعدة البيانات خدمة خارجية (Supabase) يخاطبها المتصفح مباشرة.
 
 | الاستضافة | الطريقة |
 |---|---|
 | **Netlify** | اسحب مجلد `dist` إلى [app.netlify.com/drop](https://app.netlify.com/drop) |
 | **Vercel** | `npx vercel deploy dist --prod` |
-| **GitHub Pages** | ارفع محتوى `dist` إلى فرع `gh-pages` |
+| **GitHub Pages** | مُهيَّأ تلقائياً في هذا المستودع — انظر القسم التالي |
 | **Cloudflare Pages** | أمر البناء `npm run build`، ومجلد الإخراج `dist` |
 | **استضافة عادية / cPanel** | ارفع محتويات `dist` إلى `public_html` (أو أي مجلد فرعي) |
 
@@ -114,6 +115,25 @@ npm run build
 توجيه (routing) فلا حاجة لأي قاعدة إعادة كتابة (rewrite) على الخادم.
 
 **للتجربة قبل النشر:** `npm run preview` يشغّل ناتج البناء نفسه على `localhost:4173`.
+
+### النشر التلقائي على GitHub Pages
+
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) يبني الموقع وينشره عند كل
+دفعة إلى `main`. لا حاجة لأي خطوة يدوية ولا لفرع `gh-pages`.
+
+الموقع المنشور: <https://abdarhemsheet-max.github.io/nizam-eatiad/>
+
+مفتاحا Supabase لا يوجدان في الشيفرة — يُحقنان وقت البناء من **أسرار المستودع**
+(Settings ← Secrets and variables ← Actions):
+
+| السر | القيمة |
+|---|---|
+| `VITE_SUPABASE_URL` | `https://<project-ref>.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | المفتاح العام (publishable) وحده |
+
+المفتاح العام مُصمَّم أصلاً ليعمل داخل المتصفح ولا ضرر في ظهوره في ملفات البناء؛ ما
+يحمي البيانات هو سياسات RLS في قاعدة البيانات، لا إخفاء المفتاح. **مفتاح الخدمة
+(`service_role` / `sb_secret_…`) لا يُوضع هنا ولا في أي مكان يصل إليه المتصفح.**
 
 ### أداء التحميل الأول
 
@@ -137,6 +157,29 @@ npm run build
 - **المتصفحات:** Chrome / Edge 99+، Safari 17.4+، Firefox 129+ (بسبب `ctx.letterSpacing`).
   في المتصفحات الأقدم يعمل كل شيء عدا التباعد بين الأحرف في الملف المُصدَّر.
 - **لا حفظ تلقائي:** يظهر تحذير المتصفح عند إغلاق التبويب إذا كان هناك عمل قائم.
+
+## قاعدة البيانات (Supabase)
+
+المخطط كله موصوف في [`supabase/migrations/`](supabase/migrations) ويُطبَّق بأمر واحد:
+
+```bash
+supabase link --project-ref <project-ref>
+supabase db push
+```
+
+ما ينشئه المخطط:
+
+| العنصر | الغرض |
+|---|---|
+| جدول `public.projects` | المشروع المحفوظ: مسار القالب، الحقول (`jsonb`)، الوضع، التكبير |
+| مخزن `templates` | صور القوالب، بمسار `<user_id>/<filename>` وحد 20 ميغابايت للصورة |
+| سياسات RLS | كل مستخدم يقرأ ويكتب صفوفه ومجلده وحدها |
+
+`user_id` قيمته الافتراضية `auth.uid()`، فالواجهة تُدرج الصف بلا هوية وتضبطها قاعدة
+البيانات من الجلسة نفسها — لا يستطيع مستخدم أن ينسب مشروعاً لغيره.
+
+**للتطوير المحلي:** انسخ [`.env.example`](.env.example) إلى `.env` واملأه بمفاتيح مشروعك.
+الملف مستثنى في `.gitignore`.
 
 ## البنية
 
