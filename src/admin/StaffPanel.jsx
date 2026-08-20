@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { listStaff, createStaff, regenerateCode } from '../core/staffApi.js';
-import { setUserStatus } from '../core/adminApi.js';
+import { setUserStatus, setAllowedModes } from '../core/adminApi.js';
 import Icon from '../components/Icon.jsx';
+import { MODES } from '../core/modes.js';
 
 /* =========================================================================
  *  الموظفون: إنشاء حساب باسم الموظف، وتسليمه رمزاً من ثلاثة أرقام.
@@ -60,6 +61,25 @@ export default function StaffPanel() {
     try {
       const code = await regenerateCode(row.id);
       setJustCreated({ name: row.full_name, code });
+      await refresh();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** تبديل قسم واحد لموظف. الحارس في قاعدة البيانات يمنع الموظف من فعلها لنفسه. */
+  async function toggleMode(row, modeId) {
+    const current = Array.isArray(row.allowed_modes) ? row.allowed_modes : [];
+    const next = current.includes(modeId)
+      ? current.filter((m) => m !== modeId)
+      : [...current, modeId];
+
+    setBusy(true);
+    setError(null);
+    try {
+      await setAllowedModes(row.id, next);
       await refresh();
     } catch (err) {
       setError(err.message);
@@ -133,6 +153,7 @@ export default function StaffPanel() {
               <tr>
                 <th>الموظف</th>
                 <th>الرمز</th>
+                <th>الأقسام المسموحة</th>
                 <th>الحالة</th>
                 <th>المشاريع</th>
                 <th>آخر دخول</th>
@@ -150,6 +171,26 @@ export default function StaffPanel() {
                     <span className="staff-code-chip" dir="ltr">
                       {row.code}
                     </span>
+                  </td>
+                  <td>
+                    <div className="mode-chips">
+                      {MODES.map((m) => {
+                        const on = (row.allowed_modes ?? []).includes(m.id);
+                        return (
+                          <button
+                            key={m.id}
+                            className={`mode-chip${on ? ' on' : ''}`}
+                            disabled={busy}
+                            onClick={() => toggleMode(row, m.id)}
+                            title={`${on ? 'إخفاء' : 'إظهار'} قسم ${m.title}`}
+                            aria-pressed={on}
+                          >
+                            <Icon name={m.icon} size={12} />
+                            {m.title}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </td>
                   <td>
                     <span className={`admin-pill${row.status === 'suspended' ? ' danger' : ' ok'}`}>

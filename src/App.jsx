@@ -4,8 +4,10 @@ import Sidebar from './components/Sidebar.jsx';
 import Workspace from './components/Workspace.jsx';
 import ExportModal from './components/ExportModal.jsx';
 import Icon from './components/Icon.jsx';
+import LoginGate from './components/LoginGate.jsx';
 import { useStore } from './core/store.js';
-import { startSession } from './core/session.js';
+import { startSession, useSession } from './core/session.js';
+import { SUPABASE_READY } from './core/supabase.js';
 
 /**
  * حاجز أخطاء: بدونه أي خطأ غير متوقع في الإنتاج يترك المستخدم أمام صفحة بيضاء
@@ -42,6 +44,7 @@ class ErrorBoundary extends React.Component {
 
 export default function App() {
   const view = useStore((s) => s.view);
+  const { ready, user } = useSession();
 
   // على الهاتف/الآيباد يتحول الشريط الجانبي إلى درج علوي يُفتح ويُغلق فوق مساحة
   // العمل، بدل تكديسه تحتها (كان سيحتاج تمريراً طويلاً لا يناسب اللمس).
@@ -65,11 +68,28 @@ export default function App() {
     return () => window.removeEventListener('beforeunload', onBeforeUnload);
   }, []);
 
-  // متابعة الجلسة تبدأ مرة واحدة عند الإقلاع: من دخل سابقاً يجد نفسه
-  // داخلاً، ومن لم يدخل قط لا يتغيّر شيء بالنسبة له.
+  // الدخول إلزامي، فالعميل مطلوب حتماً لكل زائر — لا معنى لتأجيله هنا
+  // كما نفعل حين يكون الدخول اختيارياً.
   useEffect(() => {
-    startSession();
+    startSession({ force: true });
   }, []);
+
+  // بلا مفاتيح Supabase لا مصادقة أصلاً (تطوير محلي بلا .env مثلاً)،
+  // فالحاجز يُسقَط بدل أن يقفل التطبيق على لا شيء.
+  if (SUPABASE_READY && !user) {
+    return (
+      <ErrorBoundary>
+        {ready ? (
+          <LoginGate />
+        ) : (
+          <div className="boot-screen">
+            <Icon name="refresh" size={26} className="spin" />
+            <p>جارٍ التحقّق من الجلسة…</p>
+          </div>
+        )}
+      </ErrorBoundary>
+    );
+  }
 
   if (view === 'dashboard') {
     return (

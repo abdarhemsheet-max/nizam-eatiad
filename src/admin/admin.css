@@ -247,3 +247,26 @@ body.admin-body-root #root {
     background: var(--panel-bg-sunken); border: 1px solid var(--panel-border);
     padding: 3px 10px; border-radius: var(--radius-sm);
 }
+
+/* ------------------------------------------------ أقسام الموظف والقوالب */
+.template-mode-picker { display: flex; flex-direction: column; gap: 8px; }
+.template-mode-picker .align-group { flex-wrap: wrap; }
+.template-mode-picker .checkbox-btn { flex: 0 1 auto; gap: 6px; padding: 8px 14px; }
+
+/* رقائق الأقسام داخل صفّ الموظف — مطفأة افتراضياً وذهبية حين تُفعَّل،
+   فيُقرأ المسموح من نظرة واحدة على العمود كله. */
+.mode-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+.mode-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 9px; border-radius: var(--radius-pill); cursor: pointer;
+    background: transparent; border: 1px solid var(--panel-border);
+    color: var(--text-muted); font-family: 'Cairo', sans-serif;
+    font-size: 0.7rem; font-weight: 700; white-space: nowrap;
+    transition: var(--transition-base);
+}
+.mode-chip:hover:not(:disabled) { color: var(--text-heading); border-color: rgba(255, 255, 255, 0.22); }
+.mode-chip.on {
+    color: var(--primary-color); border-color: rgba(197, 160, 89, 0.45);
+    background: rgba(197, 160, 89, 0.08);
+}
+.mode-chip:disabled { opacity: 0.5; cursor: default; }

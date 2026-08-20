@@ -354,6 +354,23 @@ export const useStore = create((set, get) => ({
     img.src = url;
   },
 
+  /**
+   * تحميل قالب مشترك من رابط المخزن ووضعه في القسم المطلوب.
+   *
+   * نُنزّل الرابط إلى File ثم نمرّره للضابط القائم بدل كتابة مسار ثانٍ:
+   * قراءة الأبعاد، وتحرير الرابط السابق، وحصر الحقول داخل حدود الصورة
+   * الجديدة، وإبطال مناطق التغبيش — كلها منطق موجود ولا يجوز تكراره.
+   */
+  loadSharedTemplate: async (url, name, target = 'template') => {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('تعذّر تحميل القالب من المخزن.');
+    const blob = await res.blob();
+    const file = new File([blob], name, { type: blob.type || 'image/png' });
+
+    if (target === 'crop') get().setCropTemplate(file);
+    else get().setTemplateImage(file);
+  },
+
   /** إضافة صور للقص الجماعي — يُقصّ العدد الزائد عن الحد الأقصى مع تنبيه واحد فقط. */
   addCropImages: (fileList) => {
     const files = Array.from(fileList).filter((f) => f.type.startsWith('image/'));

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { listSharedTemplates, uploadSharedTemplate, deleteSharedTemplate } from '../core/adminApi.js';
 import Icon from '../components/Icon.jsx';
+import { MODES, TEMPLATE_MODES, modeTitle } from '../core/modes.js';
 
 /* =========================================================================
  *  القوالب المشتركة: يرفعها المدير فيراها كل المستخدمين جاهزة للاستعمال،
@@ -11,6 +12,9 @@ export default function TemplatesPanel() {
   const [items, setItems] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  // القسم يُختار قبل الرفع لا بعده: القالب بلا قسم لا يظهر لأحد، وتركه
+  // اختيارياً يعني قوالب معلّقة يبحث عنها المدير لاحقاً.
+  const [mode, setMode] = useState('manual');
   const inputRef = useRef(null);
 
   async function refresh() {
@@ -38,7 +42,7 @@ export default function TemplatesPanel() {
     const failed = [];
     for (const file of list) {
       try {
-        await uploadSharedTemplate(file);
+        await uploadSharedTemplate(file, mode);
       } catch (err) {
         failed.push(`${file.name}: ${err.message}`);
       }
@@ -69,6 +73,24 @@ export default function TemplatesPanel() {
         <button className="btn-icon" onClick={refresh} title="تحديث" aria-label="تحديث القائمة">
           <Icon name="refresh" size={15} />
         </button>
+      </div>
+
+      <div className="template-mode-picker">
+        <span className="field-label">القسم الذي يظهر فيه القالب</span>
+        <div className="align-group">
+          {MODES.filter((m) => TEMPLATE_MODES.includes(m.id)).map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              className={`checkbox-btn${mode === m.id ? ' active' : ''}`}
+              onClick={() => setMode(m.id)}
+              aria-pressed={mode === m.id}
+            >
+              <Icon name={m.icon} size={14} />
+              {m.title}
+            </button>
+          ))}
+        </div>
       </div>
 
       <label className="upload-box" style={{ display: 'block' }}>
@@ -103,7 +125,7 @@ export default function TemplatesPanel() {
                   {t.name}
                 </span>
                 <span className="admin-dim">
-                  {t.width && t.height ? `${t.width}×${t.height}` : '—'}
+                  {modeTitle(t.mode)} — {t.width && t.height ? `${t.width}×${t.height}` : '—'}
                 </span>
               </figcaption>
               <button

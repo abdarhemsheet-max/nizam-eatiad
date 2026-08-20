@@ -12,6 +12,7 @@ import {
 } from '../core/store.js';
 import { generatePost, getTodayInfo, SUGGESTED_MODELS } from '../core/postsApi.js';
 import Icon from './Icon.jsx';
+import SharedTemplates from './SharedTemplates.jsx';
 
 /* المكتبات الثقيلة (xlsx / jspdf / fflate) تُحمَّل عند أول استعمال فعلي فقط،
    فلا يدفع من يفتح الصفحة ثمنها في التحميل الأول. postsApi.js خفيف (fetch
@@ -566,6 +567,7 @@ function AutoSection() {
           fileName={templateImage?.name}
           onFile={setTemplateImage}
         />
+        <SharedTemplates mode="auto" />
       </div>
 
       <div>
@@ -722,6 +724,7 @@ function ManualSection() {
           fileName={templateImage?.name}
           onFile={setTemplateImage}
         />
+        <SharedTemplates mode="manual" />
       </div>
 
       <div>
@@ -850,6 +853,7 @@ function CropSection() {
           fileName={cropTemplate ? `${cropTemplate.name} — ${cropTemplate.width}×${cropTemplate.height}px` : undefined}
           onFile={setCropTemplate}
         />
+        <SharedTemplates mode="crop" target="crop" />
       </div>
 
       <div>

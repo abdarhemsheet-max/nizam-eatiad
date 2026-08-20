@@ -1,44 +1,26 @@
 import React from 'react';
 import { useStore } from '../core/store.js';
+import { useSession } from '../core/session.js';
+import { allowedModes } from '../core/modes.js';
 import Icon from './Icon.jsx';
 import AccountBar from './AccountBar.jsx';
 
 /* =========================================================================
- *  الشاشة الرئيسية: نقطة الدخول الوحيدة للنظام — 4 مربعات كبيرة، كل واحد
+ *  الشاشة الرئيسية: نقطة الدخول الوحيدة للنظام — مربعات كبيرة، كل واحد
  *  يفتح بيئة عمل مستقلة بالكامل عن البقية (لا شريط تبويبات بعدها؛ الرجوع
  *  لهذه الشاشة هو الطريقة الوحيدة للتنقّل بين الأوضاع). بيانات كل وضع تبقى
  *  محفوظة في المخزن أثناء التنقّل، فالعودة لنفس المربع تستأنف العمل كما تركته.
+ *
+ *  المربعات المعروضة هي ما سمح به المدير لهذا الموظف (allowed_modes في
+ *  ملفه). التقييد تنظيمي لا أمني — الأقسام لا تفتح بيانات محمية، وكلها
+ *  أدوات تعمل على ملفات المستخدم على جهازه.
  * ========================================================================= */
-
-const MODULES = [
-  {
-    mode: 'auto',
-    icon: 'settings',
-    title: 'أتمتة',
-    desc: 'توليد دفعة شهادات كاملة من ملف إكسل دفعة واحدة.',
-  },
-  {
-    mode: 'manual',
-    icon: 'pen',
-    title: 'يدوي',
-    desc: 'إضافة نصوص وصور يدوياً على شهادة أو صورة واحدة.',
-  },
-  {
-    mode: 'crop',
-    icon: 'scissors',
-    title: 'قص جماعي',
-    desc: 'قص عدة صور بنفس أبعاد قالب واحد وتطبيقه عليها جميعاً.',
-  },
-  {
-    mode: 'posts',
-    icon: 'sparkles',
-    title: 'نصوص',
-    desc: 'توليد نصوص منشورات جاهزة عبر الذكاء الاصطناعي.',
-  },
-];
 
 export default function Dashboard() {
   const enterMode = useStore((s) => s.enterMode);
+  const { profile } = useSession();
+
+  const modules = allowedModes(profile);
 
   return (
     <div className="dashboard">
@@ -49,12 +31,16 @@ export default function Dashboard() {
           <span className="brand-mark" />
           نظام <span>اعتياد</span>
         </h1>
-        <p>اختر بيئة العمل التي تريدها للبدء</p>
+        <p>
+          {modules.length === 0
+            ? 'لم يُسمح لحسابك بأي قسم بعد — راجع مدير النظام'
+            : 'اختر بيئة العمل التي تريدها للبدء'}
+        </p>
       </div>
 
       <div className="dashboard-grid">
-        {MODULES.map((m) => (
-          <button key={m.mode} className="dashboard-card" onClick={() => enterMode(m.mode)}>
+        {modules.map((m) => (
+          <button key={m.id} className="dashboard-card" onClick={() => enterMode(m.id)}>
             <div className="dashboard-card-icon">
               <Icon name={m.icon} size={28} />
             </div>

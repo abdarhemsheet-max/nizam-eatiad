@@ -42,6 +42,13 @@ export async function setUserRole(userId, role) {
   if (error) throw new Error(translate(error.message));
 }
 
+/** الأقسام التي يراها الموظف. الحارس في قاعدة البيانات يمنع أن يغيّرها لنفسه. */
+export async function setAllowedModes(userId, modes) {
+  const supabase = await getSupabase();
+  const { error } = await supabase.from('profiles').update({ allowed_modes: modes }).eq('id', userId);
+  if (error) throw new Error(translate(error.message));
+}
+
 export async function setUserStatus(userId, status) {
   const supabase = await getSupabase();
   const { error } = await supabase.from('profiles').update({ status }).eq('id', userId);
@@ -119,7 +126,7 @@ function readImageSize(file) {
   });
 }
 
-export async function uploadSharedTemplate(file) {
+export async function uploadSharedTemplate(file, mode) {
   const supabase = await getSupabase();
   const { width, height } = await readImageSize(file);
 
@@ -133,7 +140,7 @@ export async function uploadSharedTemplate(file) {
 
   const { error } = await supabase
     .from('shared_templates')
-    .insert({ name: file.name, path, width, height });
+    .insert({ name: file.name, path, width, height, mode });
 
   // الصف لم يُسجَّل، فالصورة المرفوعة صارت يتيمة في المخزن — نحذفها بدل
   // تركها تستهلك المساحة بلا أي مرجع إليها.
