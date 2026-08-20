@@ -1,4 +1,4 @@
-import { supabase } from './supabase.js';
+import { getSupabase } from './supabase.js';
 import { useStore } from './store.js';
 
 /* =========================================================================
@@ -10,6 +10,7 @@ const BUCKET = 'templates';
 
 /** تحميل صورة قالب إلى المخزن والعودة بمسارها داخل المجلد، أو null بلا صورة. */
 async function uploadTemplateImage(userId, templateImage) {
+  const supabase = await getSupabase();
   if (!templateImage?.url) return { path: null, name: null };
 
   const ext = (templateImage.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -39,6 +40,7 @@ function setTemplateFromUrl(url, name) {
 
 /** حفظ المشروع الحالي (القالب + حقول الوضعين + وضع العمل). */
 export async function saveProject(name) {
+  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -76,6 +78,7 @@ export async function saveProject(name) {
 
 /** قائمة مشاريع المستخدم (الأحدث أولاً). */
 export async function listProjects() {
+  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -90,6 +93,7 @@ export async function listProjects() {
 
 /** استرجاع مشروع محفوظ ووضعه كعمل جاهز في بيئة العمل. */
 export async function loadProject(id) {
+  const supabase = await getSupabase();
   const { data, error } = await supabase.from('projects').select('*').eq('id', id).single();
   if (error) throw new Error('فشل تحميل المشروع: ' + error.message);
 
@@ -112,6 +116,7 @@ export async function loadProject(id) {
 
 /** حذف مشروع محفوظ (مع صورته من المخزن). */
 export async function deleteProject(id) {
+  const supabase = await getSupabase();
   const { data: project, error: getErr } = await supabase.from('projects').select('*').eq('id', id).single();
   if (getErr) throw new Error(getErr.message);
   if (project?.template_path) {

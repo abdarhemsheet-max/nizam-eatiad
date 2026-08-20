@@ -1,0 +1,224 @@
+/* =========================================================================
+ *  أنماط لوحة المدير — تُحمَّل مع admin.html وحدها.
+ *
+ *  الهوية نفسها (ذهبي، ألواح صلبة، بلا زجاج) والرموز نفسها من styles.css.
+ *  ما يختلف هو الشكل: التطبيق شاشة واحدة لا تتمرّر، واللوحة صفحة تقارير
+ *  تتمرّر رأسياً.
+ * ========================================================================= */
+
+/* styles.css يثبّت الجسم على ارتفاع الشاشة ويمنع التمرير لأن بيئة العمل
+   لوحة واحدة ثابتة. اللوحة عكس ذلك تماماً. */
+body.admin-body-root {
+    height: auto;
+    min-height: 100dvh;
+    overflow-y: auto;
+    padding: 0;
+}
+body.admin-body-root #root {
+    display: block;
+    height: auto;
+}
+
+.admin-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 18px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* ------------------------------------------------------------- الترويسة */
+.admin-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; padding: 16px 20px;
+}
+.admin-brand { display: flex; align-items: center; gap: 10px; }
+.admin-brand h1 {
+    margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-heading);
+}
+.admin-brand h1 span { color: var(--primary-color); }
+.admin-badge {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
+    color: var(--primary-color); background: rgba(197, 160, 89, 0.08);
+    border: 1px solid rgba(197, 160, 89, 0.3);
+    padding: 4px 10px; border-radius: var(--radius-pill);
+}
+.admin-account { display: flex; align-items: center; gap: 8px; }
+.admin-account-email {
+    font-size: 0.8rem; color: var(--text-muted);
+    max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.admin-account .btn-icon { text-decoration: none; }
+
+/* -------------------------------------------------------------- التبويبات */
+.admin-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.admin-tab {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 16px; border-radius: var(--radius-md);
+    background: var(--panel-bg); border: 1px solid var(--panel-border);
+    color: var(--text-secondary); cursor: pointer;
+    font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700;
+    transition: var(--transition-base);
+}
+.admin-tab:hover { color: var(--text-heading); border-color: rgba(255, 255, 255, 0.18); }
+.admin-tab.active { color: var(--primary-color); border-color: var(--primary-color); }
+
+/* ----------------------------------------------------------------- الأقسام */
+.admin-body { display: flex; flex-direction: column; gap: 18px; }
+
+.admin-section {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-xl);
+    padding: 22px;
+    display: flex; flex-direction: column; gap: 16px;
+}
+.admin-section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.admin-section-head h2 {
+    font-size: 1.1rem; border: none; padding: 0; margin: 0;
+}
+.admin-section h3 { margin: 0; }
+
+.admin-notice {
+    max-width: 520px; margin: 60px auto; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    color: var(--text-secondary);
+}
+.admin-notice h2 { border: none; padding: 0; font-size: 1.2rem; }
+.admin-notice p { margin: 0; line-height: 1.9; }
+.admin-notice code {
+    font-family: monospace; font-size: 0.85em; direction: ltr; display: inline-block;
+    background: var(--panel-bg-sunken); padding: 1px 6px; border-radius: var(--radius-2xs);
+}
+.admin-notice-actions { display: flex; gap: 10px; margin-top: 6px; }
+.admin-notice-actions .btn-modal { flex: none; padding: 10px 20px; text-decoration: none; }
+
+.admin-dim { color: var(--text-muted); font-size: 0.8rem; }
+
+/* -------------------------------------------------------- بطاقات الأرقام */
+.admin-cards {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+.admin-card {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--panel-bg-sunken); border: 1px solid var(--panel-border);
+    border-radius: var(--radius-md); padding: 14px;
+}
+.admin-card-icon {
+    width: 38px; height: 38px; flex-shrink: 0; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--panel-border); color: var(--primary-color);
+}
+.admin-card-value {
+    font-size: 1.4rem; font-weight: 800; color: var(--text-heading); line-height: 1.2;
+}
+.admin-card-label { font-size: 0.76rem; color: var(--text-muted); }
+
+/* --------------------------------------------------------- الرسم البياني */
+.admin-chart-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+}
+.admin-chart-head h3 { border: none; padding: 0; margin: 0; }
+.admin-range { flex: none; }
+.admin-range .checkbox-btn { padding: 7px 14px; font-size: 0.8rem; }
+
+.admin-chart {
+    background: var(--panel-bg-sunken); border: 1px solid var(--panel-border);
+    border-radius: var(--radius-md); padding: 14px;
+}
+.admin-chart svg { display: block; width: 100%; height: auto; }
+.admin-chart-axis {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 10px; font-size: 0.74rem; color: var(--text-muted);
+}
+.admin-chart-total { color: var(--primary-color); font-weight: 700; }
+
+/* ----------------------------------------------------------------- الجدول */
+/* الجدول أعرض من الهاتف حتماً — يتمرّر أفقياً داخل حاويته وحده، فلا
+   تتمرّر الصفحة كلها جانبياً. */
+.admin-table-scroll {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(197, 160, 89, 0.5) transparent;
+}
+.admin-table {
+    width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 720px;
+}
+.admin-table th {
+    text-align: start; font-size: 0.72rem; font-weight: 700; color: var(--text-muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0 10px 10px; border-bottom: 1px solid var(--panel-border); white-space: nowrap;
+}
+.admin-table td {
+    padding: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-body); vertical-align: middle;
+}
+.admin-table tr.is-suspended td { opacity: 0.55; }
+.admin-table .admin-num { font-family: monospace; color: var(--text-heading); }
+
+.admin-user-cell {
+    display: inline-flex; align-items: center; gap: 7px; padding: 0;
+    background: none; border: none; cursor: pointer; color: var(--text-heading);
+    font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700;
+    max-width: 260px;
+}
+.admin-user-cell span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-user-cell:hover { color: var(--primary-color); }
+.admin-self {
+    margin-inline-start: 8px; font-size: 0.68rem; color: var(--primary-color);
+    border: 1px solid rgba(197, 160, 89, 0.3); border-radius: var(--radius-pill); padding: 1px 7px;
+}
+
+.admin-pill {
+    display: inline-block; font-size: 0.74rem; font-weight: 700; white-space: nowrap;
+    padding: 3px 10px; border-radius: var(--radius-pill);
+    border: 1px solid var(--panel-border); color: var(--text-secondary);
+}
+.admin-pill.gold { color: var(--primary-color); border-color: rgba(197, 160, 89, 0.35); }
+.admin-pill.ok { color: var(--success-text); border-color: rgba(108, 199, 143, 0.3); }
+.admin-pill.danger { color: var(--danger-text); border-color: rgba(224, 82, 82, 0.35); }
+
+.admin-row-actions { display: flex; gap: 6px; }
+
+.admin-detail-row td { background: rgba(0, 0, 0, 0.22); }
+.admin-projects { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.admin-projects li {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    color: var(--text-secondary); font-size: 0.82rem;
+}
+.admin-project-name { font-weight: 700; color: var(--text-heading); }
+
+/* -------------------------------------------------------- شبكة القوالب */
+.admin-templates {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+.admin-template {
+    position: relative; margin: 0; border-radius: var(--radius-md); overflow: hidden;
+    background: var(--panel-bg-sunken); border: 1px solid var(--panel-border);
+}
+.admin-template img {
+    display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+    background: rgba(0, 0, 0, 0.35);
+}
+.admin-template figcaption {
+    padding: 9px 10px; display: flex; flex-direction: column; gap: 2px;
+}
+.admin-template-name {
+    font-size: 0.8rem; font-weight: 700; color: var(--text-heading);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.admin-template-del {
+    position: absolute; top: 8px; inset-inline-end: 8px;
+    background: rgba(10, 12, 16, 0.85);
+}
+
+@media (max-width: 620px) {
+    .admin-page { padding: 12px 12px 40px; }
+    .admin-header { padding: 14px; }
+    .admin-section { padding: 16px; }
+    .admin-account-email { max-width: 130px; }
+}

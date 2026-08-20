@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useStore } from '../core/store.js';
 import Icon from './Icon.jsx';
+import { logUsage } from '../core/usage.js';
 
 /* =========================================================================
  *  نافذة تقدّم التوليد — تعرض التقدّم اللحظي أثناء العمل، وتقريراً نهائياً
@@ -19,6 +20,21 @@ export default function ExportModal() {
   const closeProgress = useStore((s) => s.closeProgress);
   const [showErrors, setShowErrors] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  // تسجيل الاستخدام عند اكتمال الدفعة — هنا لا داخل محرّك التصدير، لأن
+  // هذه هي النقطة الوحيدة المشتركة بين كل الأوضاع (أتمتة، يدوي، قص).
+  // الحارس يمنع تكرار التسجيل: النافذة تبقى مركّبة بعد الانتهاء ريثما
+  // ينزّل المستخدم الملف، فتُعاد التهيئة عند بدء دفعة جديدة فقط.
+  const logged = useRef(false);
+  useEffect(() => {
+    if (!progress.running) {
+      logged.current = false;
+      return;
+    }
+    if (!progress.finished || logged.current || progress.succeeded <= 0) return;
+    logged.current = true;
+    logUsage(mode === 'crop' ? 'crops' : 'certificates', progress.succeeded);
+  }, [progress.running, progress.finished, progress.succeeded, mode]);
 
   if (!progress.running) return null;
 

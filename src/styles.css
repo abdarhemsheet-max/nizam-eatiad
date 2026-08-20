@@ -531,6 +531,77 @@ input:checked + .slider:before { transform: translateX(18px); background-color: 
 .dashboard-card-title { font-size: 1.05rem; font-weight: 800; color: var(--text-heading); }
 .dashboard-card-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
 
+/* -- شاشة الدخول وشريط الحساب -------------------------------------------
+   الدخول اختياري في التطبيق: شريط صغير في زاوية الشاشة الرئيسية، وشاشة
+   كاملة تُفتح عند طلبها فقط. في admin.html الشاشة نفسها تظهر مباشرة. */
+
+.auth-card {
+    width: 100%;
+    max-width: 380px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+}
+.auth-card h3 { margin-bottom: 18px; }
+.auth-card .btn-modal { flex: none; }
+.auth-card .link-btn { margin-top: 12px; color: var(--text-secondary); }
+.auth-card .link-btn:hover { color: var(--primary-color); }
+
+.auth-message {
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.83rem;
+    line-height: 1.7;
+}
+.auth-message.error {
+    color: var(--danger-text);
+    background: var(--danger-soft);
+    border: 1px solid rgba(224, 82, 82, 0.3);
+}
+.auth-message.success {
+    color: var(--success-text);
+    background: rgba(108, 199, 143, 0.08);
+    border: 1px solid rgba(108, 199, 143, 0.3);
+}
+
+/* الشاشة الكاملة فوق لوحة الأوضاع — تُغطّي لا تُزيح، فالعمل القائم في
+   المخزن يبقى كما هو عند الإلغاء. */
+.auth-overlay {
+    position: fixed; inset: 0; z-index: 400;
+    background: linear-gradient(180deg, #12151b 0%, #0a0c10 100%);
+    overflow-y: auto;
+}
+
+.account-bar {
+    position: absolute; top: 18px; inset-inline-start: 18px;
+    display: flex; align-items: center; gap: 8px;
+    max-width: calc(100% - 36px);
+}
+.account-email {
+    font-size: 0.78rem; color: var(--text-muted);
+    max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.account-signin, .account-admin {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border-radius: var(--radius-sm);
+    background: transparent; border: 1px solid var(--panel-border);
+    color: var(--text-secondary); cursor: pointer; text-decoration: none;
+    font-family: 'Cairo', sans-serif; font-size: 0.8rem; font-weight: 700;
+    transition: var(--transition-base);
+}
+.account-signin:hover, .account-admin:hover {
+    border-color: var(--primary-color); color: var(--primary-color);
+}
+.account-admin { border-color: rgba(197, 160, 89, 0.35); color: var(--primary-color); }
+.account-admin:hover { background: rgba(197, 160, 89, 0.08); }
+
+@media (max-width: 900px) {
+    .account-bar { top: 12px; inset-inline-start: 12px; }
+    .account-email { max-width: 120px; }
+}
+
 /* شريط عمودي في الزاوية — لوح صلب لا ضبابي، شبه شفاف حتى لا يحجب المحتوى */
 .zoom-controls {
     position: absolute; left: 16px; bottom: 16px;

@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { supabase } from '../core/supabase.js';
+import { getSupabase } from '../core/supabase.js';
 
 /* =========================================================================
  *  شاشة تسجيل الدخول: الدخول أو إنشاء حساب جديد (بريد إلكتروني + كلمة مرور)
- *  عبر Supabase Auth. بعد الدخول يظهر النظام الكامل مع حفظ المشاريع سحابياً.
+ *  عبر Supabase Auth.
+ *
+ *  تُستعمل في موضعين بنصّين مختلفين: داخل التطبيق لفتح الحفظ السحابي
+ *  (والدخول اختياري هناك، فيظهر زر "المتابعة بلا حساب")، وفي admin.html
+ *  حيث الدخول شرط لا مفرّ منه.
  * ========================================================================= */
 
-export default function AuthScreen() {
+export default function AuthScreen({ headline, subline, onSkip }) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,11 +30,14 @@ export default function AuthScreen() {
 
     setLoading(true);
     try {
+      const supabase = await getSupabase();
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
-          options: { emailRedirectTo: window.location.origin },
+          // origin وحده يُسقِط مسار المشروع، فيعود رابط التأكيد إلى جذر
+          // النطاق بدل .../nizam-eatiad/ — وهي صفحة غير موجودة.
+          options: { emailRedirectTo: new URL('./index.html', window.location.href).href },
         });
         if (error) throw error;
         setNotice('تم إنشاء الحساب! تفقّد بريدك الإلكتروني لتأكيده ثم سجّل الدخول.');
@@ -59,9 +66,16 @@ export default function AuthScreen() {
       <div className="dashboard-header">
         <h1>
           <span className="brand-mark" />
-          نظام <span>اعتياد</span>
+          {headline ?? (
+            <>
+              نظام <span>اعتياد</span>
+            </>
+          )}
         </h1>
-        <p>{isSignUp ? 'أنشئ حساباً جديداً لحفظ مشاريعك' : 'سجّل الدخول للوصول إلى مشاريعك المحفوظة'}</p>
+        <p>
+          {subline ??
+            (isSignUp ? 'أنشئ حساباً جديداً لحفظ مشاريعك' : 'سجّل الدخول للوصول إلى مشاريعك المحفوظة')}
+        </p>
       </div>
 
       <form className="auth-card glass-panel" onSubmit={handleSubmit}>
@@ -99,6 +113,12 @@ export default function AuthScreen() {
         <button type="button" className="link-btn" onClick={() => setIsSignUp((v) => !v)}>
           {isSignUp ? 'لديك حساب بالفعل؟ سجّل الدخول' : 'ليس لديك حساب؟ أنشئ حساباً جديداً'}
         </button>
+
+        {onSkip && (
+          <button type="button" className="link-btn" onClick={onSkip}>
+            المتابعة بلا حساب — كل الأوضاع تعمل، بلا حفظ سحابي
+          </button>
+        )}
       </form>
     </div>
   );

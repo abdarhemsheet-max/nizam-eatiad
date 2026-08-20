@@ -1,4 +1,5 @@
 import { useStore } from './store.js';
+import { logUsage } from './usage.js';
 
 /* =========================================================================
  *  توليد نصوص المنشورات عبر Groq (نموذج لغوي) — طلب مباشر من المتصفح إلى
@@ -102,6 +103,7 @@ export async function generatePost() {
     if (!text) throw new Error('لم يُعِد النموذج أي نص. حاول مجدداً بتوجيهات أوضح.');
 
     setPostsGeneratedText(resolveDatePlaceholders(text, today));
+    logUsage('posts', 1);
   } catch (err) {
     if (err instanceof TypeError) {
       setPostsError('تعذّر الاتصال بخادم Groq. تحقّق من اتصالك بالإنترنت.');

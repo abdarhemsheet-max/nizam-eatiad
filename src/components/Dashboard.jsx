@@ -1,6 +1,7 @@
 import React from 'react';
 import { useStore } from '../core/store.js';
 import Icon from './Icon.jsx';
+import AccountBar from './AccountBar.jsx';
 
 /* =========================================================================
  *  الشاشة الرئيسية: نقطة الدخول الوحيدة للنظام — 4 مربعات كبيرة، كل واحد
@@ -41,6 +42,8 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
+      <AccountBar />
+
       <div className="dashboard-header">
         <h1>
           <span className="brand-mark" />

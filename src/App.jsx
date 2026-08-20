@@ -5,6 +5,7 @@ import Workspace from './components/Workspace.jsx';
 import ExportModal from './components/ExportModal.jsx';
 import Icon from './components/Icon.jsx';
 import { useStore } from './core/store.js';
+import { startSession } from './core/session.js';
 
 /**
  * حاجز أخطاء: بدونه أي خطأ غير متوقع في الإنتاج يترك المستخدم أمام صفحة بيضاء
@@ -62,6 +63,12 @@ export default function App() {
     };
     window.addEventListener('beforeunload', onBeforeUnload);
     return () => window.removeEventListener('beforeunload', onBeforeUnload);
+  }, []);
+
+  // متابعة الجلسة تبدأ مرة واحدة عند الإقلاع: من دخل سابقاً يجد نفسه
+  // داخلاً، ومن لم يدخل قط لا يتغيّر شيء بالنسبة له.
+  useEffect(() => {
+    startSession();
   }, []);
 
   if (view === 'dashboard') {
